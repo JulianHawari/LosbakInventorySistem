@@ -9,6 +9,7 @@ use App\Models\TemplateLosbak;
 use App\Services\StokService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class ProduksiController extends Controller
 {
@@ -161,9 +162,31 @@ class ProduksiController extends Controller
     // =========================
     // SHOW
     // =========================
-    public function show(Produksi $produksi)
-    {
-        $produksi->load('details.bahan','template');
-        return view('admin.produksi.show', compact('produksi'));
-    }
+public function show(Produksi $produksi)
+{
+    $produksi->load('details.bahan','template');
+    return view('admin.produksi.show', compact('produksi'));
+}
+    // =========================
+    // PRINT SPK
+    // =========================
+        public function spk($id)
+        {
+            // WAJIB: pakai id_produksi (bukan id default)
+            $produksi = Produksi::with(['details.bahan', 'template'])
+                ->where('id_produksi', $id)
+                ->firstOrFail();
+
+            // FORMAT TANGGAL & JAM DI CONTROLLER (BUKAN DI BLADE)
+            $tanggal = date('d-m-Y', strtotime($produksi->tanggal));
+            $jam = date('H:i') . ' WIB';
+
+            $pdf = Pdf::loadView('admin.produksi.spk-pdf', [
+                'produksi' => $produksi,
+                'tanggal'  => $tanggal,
+                'jam'      => $jam,
+            ])->setPaper('A4', 'portrait');
+
+            return $pdf->stream('SPK-Produksi-'.$produksi->id_produksi.'.pdf');
+        }
 }

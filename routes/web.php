@@ -9,25 +9,28 @@ use App\Http\Controllers\TemplateController;
 
 /*
 |--------------------------------------------------------------------------
-| FRONTEND
+| ROOT → LANGSUNG LOGIN
 |--------------------------------------------------------------------------
 */
-Route::get('/', function () {
-    return view('frontend.home');
-})->name('home');
+Route::redirect('/', '/login');
 
 /*
 |--------------------------------------------------------------------------
 | AUTH / DASHBOARD (BREEZE)
 |--------------------------------------------------------------------------
-| Breeze redirect ke route('dashboard')
+| Breeze default redirect ke route('dashboard')
 | Kita arahkan ke admin dashboard
 */
-Route::middleware(['auth'])->get('/dashboard', function () {
+Route::middleware('auth')->get('/dashboard', function () {
     return redirect()->route('admin.dashboard');
 })->name('dashboard');
 
-Route::middleware(['auth'])->group(function () {
+/*
+|--------------------------------------------------------------------------
+| PROFILE
+|--------------------------------------------------------------------------
+*/
+Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])
         ->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])
@@ -121,6 +124,14 @@ Route::middleware(['auth'])
 
     Route::post('produksi/{produksi}/toggle-status', [ProduksiController::class,'toggleStatus'])
         ->name('produksi.toggleStatus');
+
+Route::get('/produksi/{id}/spk', [ProduksiController::class, 'spk'])
+    ->name('produksi.spk');
+
+Route::get('/admin/produksi/{produksi}', [ProduksiController::class, 'show'])
+    ->name('admin.produksi.show');
+
+
 });
 
 require __DIR__.'/auth.php';

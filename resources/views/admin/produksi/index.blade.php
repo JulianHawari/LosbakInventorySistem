@@ -66,21 +66,24 @@
                             </span>
                         @endif
                     </td>
+                <td class="p-4 text-center space-x-2">
 
-                    {{-- AKSI --}}
-                    <td class="p-4 text-center space-x-2">
-                        <a href="{{ route('admin.produksi.show',$p) }}"
-                           class="text-blue-600">
-                            Detail
+                    {{-- DETAIL (SELALU ADA) --}}
+                    <a href="{{ route('admin.produksi.spk', $p->id_produksi) }}"
+                    target="_blank"
+                    class="text-blue-600 font-semibold">
+                        Detail
+                    </a>
+
+                    {{-- EDIT (HANYA SAAT PROSES) --}}
+                    @if($mode === 'proses')
+                        <a href="{{ route('admin.produksi.edit',$p) }}"
+                        class="text-indigo-600">
+                            Edit
                         </a>
+                    @endif
 
-                        @if($mode === 'proses')
-                            <a href="{{ route('admin.produksi.edit',$p) }}"
-                               class="text-indigo-600">
-                                Edit
-                            </a>
-                        @endif
-                    </td>
+                </td>
                 </tr>
             @empty
                 <tr>

@@ -1,25 +1,63 @@
-<x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl">Tambah Stok: {{ $bahan->nama_bahan }}</h2>
-    </x-slot>
+<x-admin-layout
+    title="Restock Bahan"
+    header="Restock: {{ $bahan->nama_bahan }}"
+>
 
-    <div class="p-6">
-        <form method="POST" action="{{ route('admin.bahan.restock', $bahan) }}">
-            @csrf
-            <div>
-                <label>Jumlah</label>
-                <input class="border p-2 w-full" type="number" name="jumlah" min="1" required>
-            </div>
-            <div class="mt-3">
-                <label>Tanggal</label>
-                <input class="border p-2 w-full" type="date" name="tanggal" value="{{ now()->toDateString() }}" required>
-            </div>
-            <div class="mt-3">
-                <label>Keterangan</label>
-                <input class="border p-2 w-full" type="text" name="keterangan" placeholder="Contoh: beli bahan">
-            </div>
+<x-card>
+    <form method="POST" action="{{ route('admin.bahan.restock', $bahan) }}">
+        @csrf
 
-            <button class="mt-4 border px-4 py-2">Simpan</button>
-        </form>
-    </div>
-</x-app-layout>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+            <x-input
+                label="Nama Bahan"
+                :value="$bahan->nama_bahan"
+                disabled
+            />
+
+            <x-input
+                label="Stok Saat Ini"
+                :value="$bahan->stok . ' ' . $bahan->satuan"
+                disabled
+            />
+
+            <x-input
+                label="Jumlah Tambah"
+                name="jumlah"
+                type="number"
+                min="1"
+                required
+            />
+
+            <x-input
+                label="Tanggal"
+                name="tanggal"
+                type="date"
+                value="{{ now()->toDateString() }}"
+                required
+            />
+
+            <div class="md:col-span-2">
+                <x-input
+                    label="Keterangan"
+                    name="keterangan"
+                    placeholder="Contoh: beli bahan / supplier A"
+                />
+            </div>
+        </div>
+
+        <div class="flex justify-end mt-8 gap-2">
+            <a href="{{ route('admin.bahan.index') }}">
+                <x-button variant="secondary">
+                    Batal
+                </x-button>
+            </a>
+
+            <x-button>
+                Simpan Restock
+            </x-button>
+        </div>
+    </form>
+</x-card>
+
+</x-admin-layout>
